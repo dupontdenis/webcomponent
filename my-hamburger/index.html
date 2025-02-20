@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hamburger Menu</title>
+  <!-- Add Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <hamburger-menu></hamburger-menu>
+
+  <script>
+    class HamburgerMenu extends HTMLElement {
+      constructor() {
+        super();
+        const shadow = this.attachShadow({ mode: 'open' });
+
+        const style = document.createElement('style');
+        style.textContent = `
+          @import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
+          .menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+          }
+          .menu.show {
+            transform: translateX(0);
+          }
+        `;
+
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `
+          <button class="hamburger btn btn-warning" aria-label="Open menu" aria-expanded="false">☰</button>
+          <ul class="menu list-group bg-warning text-white p-3">
+            <li class="list-group-item bg-dark"><a href="#" class="text-white">Home</a></li>
+            <li class="list-group-item bg-dark"><a href="#" class="text-white">About</a></li>
+            <li class="list-group-item bg-dark"><a href="#" class="text-white">Contact</a></li>
+          </ul>
+        `;
+
+        shadow.appendChild(style);
+        shadow.appendChild(wrapper);
+
+        this.hamburger = shadow.querySelector('.hamburger');
+        this.menu = shadow.querySelector('.menu');
+
+        this.hamburger.addEventListener('click', () => {
+          const isExpanded = this.hamburger.getAttribute('aria-expanded') === 'true';
+          this.hamburger.setAttribute('aria-expanded', !isExpanded);
+          this.menu.classList.toggle('show');
+          this.menu.setAttribute('aria-hidden', isExpanded);
+        });
+
+        this.menu.addEventListener('click', () => {
+          this.menu.classList.remove('show');
+          this.hamburger.setAttribute('aria-expanded', 'false');
+          this.menu.setAttribute('aria-hidden', 'true');
+        });
+      }
+    }
+
+    customElements.define('hamburger-menu', HamburgerMenu);
+  </script>
+
+  <!-- Add Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
